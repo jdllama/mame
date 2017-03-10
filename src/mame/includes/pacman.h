@@ -1,6 +1,7 @@
 // license:BSD-3-Clause
 // copyright-holders:Nicola Salmoria
 #include "sound/namco.h"
+#include "tracker/GameTracker.h"
 
 /*************************************************************************
 
@@ -171,4 +172,9 @@ public:
 	// jumpshot.c
 	uint8_t jumpshot_decrypt(int addr, uint8_t e);
 	void jumpshot_decode();
+
+	// Additional members (counters etc.)
+	GameTracker tracker;
+	
+	// End project related members and declaration macros.
 };
