@@ -7,5 +7,6 @@
 class GameTracker
 {
 	public:
+		std::map<std::string, uint32_t> stats;
 		void clearStats();
 };
