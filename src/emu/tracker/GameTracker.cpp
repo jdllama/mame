@@ -6,8 +6,6 @@
 
 void GameTracker::clearStats()
 {
-	//	stats.clear();
-	return;
 }
 
 uint8_t GameTracker::readMemory(uint16_t address)
@@ -15,7 +13,7 @@ uint8_t GameTracker::readMemory(uint16_t address)
 	return memory[address];
 }
 
-void GameTracker::setMemoryBase(uint8_t *base)
+void GameTracker::setMemoryBase(unsigned char *base)
 {
 	memory = base;
 }

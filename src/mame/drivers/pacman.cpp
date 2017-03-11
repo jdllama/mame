@@ -7258,6 +7258,12 @@ READ8_MEMBER(pacman_state::cannonbp_protection_r)
 	}
 }
 
+DRIVER_INIT_MEMBER(pacman_state,pacmanf)
+{
+//	tracker.setMemoryBase(memregion("maincpu")->base());	
+	tracker.clearStats();
+}
+
 
 DRIVER_INIT_MEMBER(pacman_state,cannonbp)
 {
