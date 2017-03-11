@@ -955,6 +955,36 @@ READ8_MEMBER(pacman_state::pacman_read_nop)
 	return 0xbf;
 }
 
+/* Project specific stuffs */
+
+READ8_MEMBER(pacman_state::level_read)
+{
+	// Basic plumbing to allow this region of memory to be read
+	//	return tracker.readMemory(0x4E13);
+	return memregion("maincpu")->base()[offset+0x4E13];
+}
+
+WRITE8_MEMBER(pacman_state::level_write)
+{
+	memregion("maincpu")->base()[offset+0x4E13] = data;
+	// Basic plumbing to allow this region of memory to be written to
+	//tracker.writeMemory(0x4E13, data);
+//	if(gameReady == 2) {
+		if(data != 0) {
+			tracker.setStat("level", data + 1);
+			tracker.setStat("state", 1);
+			tracker.buildJSON();
+			tracker.writeFile("pacman.json");
+			printf("---------------------------\n");
+			printf("  END OF LEVEL STATISTICS  \n");
+			printf("---------------------------\n");
+			printf("%s", tracker.json.str().c_str());
+			printf("---------------------------\n");
+		}
+//	}
+
+}
+
 
 
 /*************************************
@@ -969,7 +999,10 @@ static ADDRESS_MAP_START( pacman_map, AS_PROGRAM, 8, pacman_state )
 	AM_RANGE(0x4000, 0x43ff) AM_MIRROR(0xa000) AM_RAM_WRITE(pacman_videoram_w) AM_SHARE("videoram")
 	AM_RANGE(0x4400, 0x47ff) AM_MIRROR(0xa000) AM_RAM_WRITE(pacman_colorram_w) AM_SHARE("colorram")
 	AM_RANGE(0x4800, 0x4bff) AM_MIRROR(0xa000) AM_READ(pacman_read_nop) AM_WRITENOP
-	AM_RANGE(0x4c00, 0x4fef) AM_MIRROR(0xa000) AM_RAM
+//	AM_RANGE(0x4c00, 0x4fef) AM_MIRROR(0xa000) AM_RAM
+	AM_RANGE(0x4c00, 0x4E12) AM_MIRROR(0xa000) AM_RAM
+	AM_RANGE(0x4E13, 0x4E13) AM_MIRROR(0xa000) AM_READ(level_read) AM_WRITE(level_write)
+	AM_RANGE(0x4E14, 0x4fef) AM_MIRROR(0xa000) AM_RAM
 	AM_RANGE(0x4ff0, 0x4fff) AM_MIRROR(0xa000) AM_RAM AM_SHARE("spriteram")
 	AM_RANGE(0x5000, 0x5000) AM_MIRROR(0xaf38) AM_WRITE(irq_mask_w)
 	AM_RANGE(0x5001, 0x5001) AM_MIRROR(0xaf38) AM_DEVWRITE("namco", namco_device, pacman_sound_enable_w)
@@ -7258,10 +7291,16 @@ READ8_MEMBER(pacman_state::cannonbp_protection_r)
 	}
 }
 
+DRIVER_INIT_MEMBER(pacman_state,pacman)
+{
+	tracker.setMemoryBase(memregion("maincpu")->base());	
+//	tracker.clearStats();
+}
+
 DRIVER_INIT_MEMBER(pacman_state,pacmanf)
 {
-//	tracker.setMemoryBase(memregion("maincpu")->base());	
-	tracker.clearStats();
+	tracker.setMemoryBase(memregion("maincpu")->base());	
+//	tracker.clearStats();
 }
 
 

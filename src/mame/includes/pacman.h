@@ -120,6 +120,7 @@ public:
 	DECLARE_DRIVER_INIT(ponpoko);
 	DECLARE_DRIVER_INIT(eyes);
 	DECLARE_DRIVER_INIT(woodpek);
+	DECLARE_DRIVER_INIT(pacman);
 	DECLARE_DRIVER_INIT(pacmanf);
 	DECLARE_DRIVER_INIT(cannonbp);
 	DECLARE_DRIVER_INIT(jumpshot);
@@ -173,6 +174,16 @@ public:
 	// jumpshot.c
 	uint8_t jumpshot_decrypt(int addr, uint8_t e);
 	void jumpshot_decode();
+
+	/***********************************************
+	* Project related member declarations will live 
+	* here in this space.
+	************************************************/
+	// Read hook members
+	DECLARE_READ8_MEMBER(level_read);
+
+	// Writehook members
+	DECLARE_WRITE8_MEMBER(level_write);
 
 	// Additional members (counters etc.)
 	GameTracker tracker;

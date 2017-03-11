@@ -8,9 +8,16 @@ class GameTracker
 {
 	public:
 		std::map<std::string, uint32_t> stats;
-		unsigned char *memory;
+		uint8_t *memory;
 		std::stringstream json;
+
+		void setStat(std::string name, uint32_t value);
+		uint32_t getStat(std::string name);
+		void clearStat(std::string name);
 		void clearStats();
+		void setMemoryBase(uint8_t *base);
 		uint8_t readMemory(uint16_t address);
-		void setMemoryBase(unsigned char *base);
+		void writeMemory(uint16_t address, uint8_t value);
+		void buildJSON();
+		void writeFile(std::string name);
 };
