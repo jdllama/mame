@@ -121,7 +121,6 @@ public:
 	DECLARE_DRIVER_INIT(eyes);
 	DECLARE_DRIVER_INIT(woodpek);
 	DECLARE_DRIVER_INIT(pacman);
-	DECLARE_DRIVER_INIT(pacmanf);
 	DECLARE_DRIVER_INIT(cannonbp);
 	DECLARE_DRIVER_INIT(jumpshot);
 	DECLARE_DRIVER_INIT(korosuke);
@@ -181,12 +180,17 @@ public:
 	************************************************/
 	// Read hook members
 	DECLARE_READ8_MEMBER(level_read);
+	DECLARE_READ8_MEMBER(state_read);
 
 	// Writehook members
 	DECLARE_WRITE8_MEMBER(level_write);
+	DECLARE_WRITE8_MEMBER(state_write);
 
 	// Additional members (counters etc.)
 	GameTracker tracker;
+
+	uint8_t lastState;
+	uint8_t gameReady;
 	
 	// End project related members and declaration macros.
 };

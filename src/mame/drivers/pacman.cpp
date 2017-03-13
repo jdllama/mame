@@ -963,11 +963,17 @@ READ8_MEMBER(pacman_state::level_read)
 	return memregion("maincpu")->base()[offset+0x4E13];
 }
 
+READ8_MEMBER(pacman_state::state_read)
+{
+	// Basic plumbing to allow this region of memory to be read
+	return memregion("maincpu")->base()[offset+0x4E00];
+}
+
 WRITE8_MEMBER(pacman_state::level_write)
 {
 	// Basic plumbing to allow this region of memory to be written to
 	memregion("maincpu")->base()[offset+0x4E13] = data;
-//	if(gameReady == 2) {
+	if(gameReady == 2) {
 		if(data != 0) {
 			tracker.setStat("level", data + 1);
 			tracker.setStat("state", 1);
@@ -979,10 +985,27 @@ WRITE8_MEMBER(pacman_state::level_write)
 			printf("%s", tracker.json.str().c_str());
 			printf("---------------------------\n");
 		}
-//	}
+	}
 
 }
 
+WRITE8_MEMBER(pacman_state::state_write)
+{
+	// Basic plumbing to allow this region of memory to be written to
+	memregion("maincpu")->base()[offset+0x4E00] = data;
+	if(data == lastState) {
+		gameReady = 1;
+	}
+	else if(gameReady == 1 && data == 2) {
+		gameReady = 2;
+		tracker.setStat("level", 1);
+		tracker.setStat("state", 99);
+		tracker.buildJSON();
+		tracker.writeFile();
+		printf("GAME STARTED\n");
+	}
+	lastState = data;
+}
 
 
 /*************************************
@@ -998,7 +1021,9 @@ static ADDRESS_MAP_START( pacman_map, AS_PROGRAM, 8, pacman_state )
 	AM_RANGE(0x4400, 0x47ff) AM_MIRROR(0xa000) AM_RAM_WRITE(pacman_colorram_w) AM_SHARE("colorram")
 	AM_RANGE(0x4800, 0x4bff) AM_MIRROR(0xa000) AM_READ(pacman_read_nop) AM_WRITENOP
 //	AM_RANGE(0x4c00, 0x4fef) AM_MIRROR(0xa000) AM_RAM
-	AM_RANGE(0x4c00, 0x4E12) AM_MIRROR(0xa000) AM_RAM
+	AM_RANGE(0x4c00, 0x4DFF) AM_MIRROR(0xa000) AM_RAM
+	AM_RANGE(0x4E00, 0x4E00) AM_MIRROR(0xa000) AM_READ(state_read) AM_WRITE(state_write)
+	AM_RANGE(0x4E01, 0x4E12) AM_MIRROR(0xa000) AM_RAM
 	AM_RANGE(0x4E13, 0x4E13) AM_MIRROR(0xa000) AM_READ(level_read) AM_WRITE(level_write)
 	AM_RANGE(0x4E14, 0x4fef) AM_MIRROR(0xa000) AM_RAM
 	AM_RANGE(0x4ff0, 0x4fff) AM_MIRROR(0xa000) AM_RAM AM_SHARE("spriteram")
@@ -7291,14 +7316,9 @@ READ8_MEMBER(pacman_state::cannonbp_protection_r)
 
 DRIVER_INIT_MEMBER(pacman_state,pacman)
 {
-	tracker.registerJSONfile("pacman.json");
+	lastState = 255;
+	gameReady = 0;
 }
-
-DRIVER_INIT_MEMBER(pacman_state,pacmanf)
-{
-	tracker.registerJSONfile("pacmanf.json");
-}
-
 
 DRIVER_INIT_MEMBER(pacman_state,cannonbp)
 {

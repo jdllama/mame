@@ -10,7 +10,7 @@ class GameTracker
 		std::map<std::string, uint32_t> stats;
 		uint8_t *memory;
 		std::stringstream json;
-		std::string _filename;
+		std::string _filename = "game.js";
 
 		void setStat(std::string name, uint32_t value);
 		uint32_t getStat(std::string name);
@@ -20,5 +20,6 @@ class GameTracker
 		uint8_t readMemory(uint16_t address);
 		void writeMemory(uint16_t address, uint8_t value);
 		void buildJSON();
-		void writeFile(std::string name);
+		void registerJSONfile(std::string filename);
+		void writeFile();
 };
