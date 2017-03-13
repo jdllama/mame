@@ -1,3 +1,14 @@
+# **SigmaMAME** #
+
+SigmaMAME is a version of MAME designed to pull variables out of the RAM into a "game.js" file, which a separate program can monitor for changes and output as needed.
+
+Currently working:
+
+pacman  
+pacmanf
+
+Original Readme.MD below.
+
 
 # **MAME** #
 
