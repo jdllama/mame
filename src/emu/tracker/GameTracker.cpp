@@ -65,10 +65,14 @@ void GameTracker::buildJSON()
 	json << "}\n";
 }
 
-void GameTracker::writeFile(std::string name)
+void GameTracker::registerJSONfile(std::string filename) {
+	_filename = filename;
+}
+
+void GameTracker::writeFile()
 {
 	std::ofstream file;
-	file.open(name.c_str());
+	file.open(_filename.c_str());
 	file << json.str().c_str();
 	file.close();
 }

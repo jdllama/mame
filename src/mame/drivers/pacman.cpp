@@ -960,21 +960,19 @@ READ8_MEMBER(pacman_state::pacman_read_nop)
 READ8_MEMBER(pacman_state::level_read)
 {
 	// Basic plumbing to allow this region of memory to be read
-	//	return tracker.readMemory(0x4E13);
 	return memregion("maincpu")->base()[offset+0x4E13];
 }
 
 WRITE8_MEMBER(pacman_state::level_write)
 {
-	memregion("maincpu")->base()[offset+0x4E13] = data;
 	// Basic plumbing to allow this region of memory to be written to
-	//tracker.writeMemory(0x4E13, data);
+	memregion("maincpu")->base()[offset+0x4E13] = data;
 //	if(gameReady == 2) {
 		if(data != 0) {
 			tracker.setStat("level", data + 1);
 			tracker.setStat("state", 1);
 			tracker.buildJSON();
-			tracker.writeFile("pacman.json");
+			tracker.writeFile();
 			printf("---------------------------\n");
 			printf("  END OF LEVEL STATISTICS  \n");
 			printf("---------------------------\n");
@@ -7293,14 +7291,12 @@ READ8_MEMBER(pacman_state::cannonbp_protection_r)
 
 DRIVER_INIT_MEMBER(pacman_state,pacman)
 {
-	tracker.setMemoryBase(memregion("maincpu")->base());	
-//	tracker.clearStats();
+	tracker.registerJSONfile("pacman.json");
 }
 
 DRIVER_INIT_MEMBER(pacman_state,pacmanf)
 {
-	tracker.setMemoryBase(memregion("maincpu")->base());	
-//	tracker.clearStats();
+	tracker.registerJSONfile("pacmanf.json");
 }
 
 

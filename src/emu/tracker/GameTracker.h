@@ -10,6 +10,7 @@ class GameTracker
 		std::map<std::string, uint32_t> stats;
 		uint8_t *memory;
 		std::stringstream json;
+		std::string _filename;
 
 		void setStat(std::string name, uint32_t value);
 		uint32_t getStat(std::string name);
